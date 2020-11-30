@@ -1,20 +1,22 @@
-package ru.las.dto;
+package ru.las.model.db;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
-import java.util.List;
+import java.time.LocalDateTime;
 
 @Getter
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
-public class InvitationDto {
+public class InvitationDb {
 
+    private int id;
+    private String phone;
     private int author;
-    private String message;
-    private List<String> numbers;
+    private int application;
+    private LocalDateTime createdon;
 
 }

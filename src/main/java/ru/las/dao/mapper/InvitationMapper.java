@@ -3,6 +3,7 @@ package ru.las.dao.mapper;
 import org.apache.ibatis.annotations.Insert;
 import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Param;
+import org.apache.ibatis.annotations.Select;
 
 import java.util.List;
 
@@ -19,4 +20,9 @@ public interface InvitationMapper {
     void create(@Param("numbers") List<String> phoneNumbers,
                 @Param("author") int author,
                 @Param("app") int application);
+
+    @Select({"SELECT count(*)",
+            "   FROM invitation",
+            "  WHERE phone = #{number}"})
+    int invitationCount(@Param("number") String phoneNumber);
 }

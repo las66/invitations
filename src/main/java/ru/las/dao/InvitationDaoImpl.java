@@ -20,4 +20,9 @@ public class InvitationDaoImpl implements InvitationDao {
     public void create(List<String> phoneNumbers, int author, int application) {
         invitationMapper.create(phoneNumbers, author, application);
     }
+
+    @Override
+    public boolean checkInvite(String phoneNumber) {
+        return invitationMapper.invitationCount(phoneNumber) != 0;
+    }
 }
