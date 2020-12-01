@@ -5,6 +5,7 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import ru.las.dao.InvitationDao;
 import ru.las.service.inviter.Inviter;
+import ru.las.validator.MessageValidator;
 import ru.las.validator.PhoneNumberValidator;
 
 import java.util.List;
@@ -15,16 +16,19 @@ public class InvitationServiceImpl implements InvitationService {
     private final InvitationDao invitationDao;
     private final Inviter inviter;
     private final PhoneNumberValidator phoneNumberValidator;
+    private final MessageValidator messageValidator;
     private final int application;
 
     @Autowired
     public InvitationServiceImpl(InvitationDao invitationDao,
                                  Inviter inviter,
                                  PhoneNumberValidator phoneNumberValidator,
+                                 MessageValidator messageValidator,
                                  @Value("${application.number}") int application) {
         this.invitationDao = invitationDao;
         this.inviter = inviter;
         this.phoneNumberValidator = phoneNumberValidator;
+        this.messageValidator = messageValidator;
         this.application = application;
     }
 
@@ -33,6 +37,7 @@ public class InvitationServiceImpl implements InvitationService {
         phoneNumberValidator.validateFormat(phoneNumbers);
         phoneNumberValidator.validateNumberPerDay(phoneNumbers, invitationDao.todayCount(application));
         phoneNumberValidator.validateDuplicates(phoneNumbers);
+        messageValidator.validateSize(message);
 
         inviter.sendInvites(phoneNumbers, message);
         invitationDao.create(phoneNumbers, author, application);
