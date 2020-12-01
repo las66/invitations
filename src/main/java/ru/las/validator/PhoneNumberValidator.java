@@ -1,11 +1,9 @@
 package ru.las.validator;
 
 import org.springframework.stereotype.Component;
-import ru.las.exception.BigPhoneNumbersListException;
-import ru.las.exception.EmptyPhoneNumbersListException;
-import ru.las.exception.InvalidPhoneNumbersException;
-import ru.las.exception.TooMachInvitationsPerDayException;
+import ru.las.exception.*;
 
+import java.util.HashSet;
 import java.util.List;
 import java.util.regex.Pattern;
 
@@ -14,7 +12,7 @@ public class PhoneNumberValidator {
 
     private static final String PHONE_PATTERN = "^7\\d{10}$";
     private static final int MAX_PHONE_LIST_SIZE = 16;
-    private static final int MAX_INVITATION_PER_DAY = 5;
+    private static final int MAX_INVITATION_PER_DAY = 128;
     private final Pattern pattern;
 
     public PhoneNumberValidator() {
@@ -43,6 +41,12 @@ public class PhoneNumberValidator {
     public void validateNumberPerDay(List<String> phoneNumbers, int todayCount) {
         if (phoneNumbers.size() + todayCount > MAX_INVITATION_PER_DAY) {
             throw new TooMachInvitationsPerDayException();
+        }
+    }
+
+    public void validateDuplicates(List<String> phoneNumbers) {
+        if (phoneNumbers.size() != new HashSet<>(phoneNumbers).size()) {
+            throw new DuplicateNumberException();
         }
     }
 }
