@@ -41,10 +41,11 @@ public class InvitationServiceImpl implements InvitationService {
         phoneNumberValidator.validateFormat(phoneNumbers);
         phoneNumberValidator.validateNumberPerDay(phoneNumbers, invitationDao.todayCount(application));
         phoneNumberValidator.validateDuplicates(phoneNumbers);
-        messageValidator.validateSize(message);
+        messageValidator.validateMinSize(message);
 
         String translitMessage = transitConverter.cyrillicToLatin(message);
         messageValidator.validateGsmString(translitMessage);
+        messageValidator.validateMaxSize(translitMessage);
 
         inviter.sendInvites(phoneNumbers, message);
         invitationDao.create(phoneNumbers, author, application);
