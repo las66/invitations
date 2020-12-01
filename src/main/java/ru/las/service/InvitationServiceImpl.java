@@ -31,6 +31,7 @@ public class InvitationServiceImpl implements InvitationService {
     public void invite(List<String> phoneNumbers, String message, int author) {
         phoneNumberValidator.validateListSize(phoneNumbers);
         phoneNumberValidator.validateFormat(phoneNumbers);
+        phoneNumberValidator.validateNumberPerDay(phoneNumbers, invitationDao.todayCount(application));
 
         inviter.sendInvites(phoneNumbers, message);
         invitationDao.create(phoneNumbers, author, application);

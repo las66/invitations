@@ -25,4 +25,8 @@ public interface InvitationMapper {
             "   FROM invitation",
             "  WHERE phone = #{phoneNumber}"})
     int invitationCount(@Param("phoneNumber") String phoneNumber);
+
+    @Select({"SELECT * ",
+            "   FROM getcountinvitations(#{application})"})
+    int invitationTodayCount(@Param("application") int application);
 }
