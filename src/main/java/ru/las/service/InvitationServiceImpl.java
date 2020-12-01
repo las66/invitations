@@ -3,6 +3,7 @@ package ru.las.service;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
+import ru.las.converter.TranslitConverter;
 import ru.las.dao.InvitationDao;
 import ru.las.service.inviter.Inviter;
 import ru.las.validator.MessageValidator;
@@ -17,6 +18,7 @@ public class InvitationServiceImpl implements InvitationService {
     private final Inviter inviter;
     private final PhoneNumberValidator phoneNumberValidator;
     private final MessageValidator messageValidator;
+    private final TranslitConverter transitConverter;
     private final int application;
 
     @Autowired
@@ -24,11 +26,13 @@ public class InvitationServiceImpl implements InvitationService {
                                  Inviter inviter,
                                  PhoneNumberValidator phoneNumberValidator,
                                  MessageValidator messageValidator,
+                                 TranslitConverter transitConverter,
                                  @Value("${application.number}") int application) {
         this.invitationDao = invitationDao;
         this.inviter = inviter;
         this.phoneNumberValidator = phoneNumberValidator;
         this.messageValidator = messageValidator;
+        this.transitConverter = transitConverter;
         this.application = application;
     }
 
@@ -38,6 +42,9 @@ public class InvitationServiceImpl implements InvitationService {
         phoneNumberValidator.validateNumberPerDay(phoneNumbers, invitationDao.todayCount(application));
         phoneNumberValidator.validateDuplicates(phoneNumbers);
         messageValidator.validateSize(message);
+
+        String translitMessage = transitConverter.cyrillicToLatin(message);
+        messageValidator.validateGsmString(translitMessage);
 
         inviter.sendInvites(phoneNumbers, message);
         invitationDao.create(phoneNumbers, author, application);

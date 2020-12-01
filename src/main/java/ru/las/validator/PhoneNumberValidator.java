@@ -13,14 +13,14 @@ public class PhoneNumberValidator {
     private static final String PHONE_PATTERN = "^7\\d{10}$";
     private static final int MAX_PHONE_LIST_SIZE = 16;
     private static final int MAX_INVITATION_PER_DAY = 128;
-    private final Pattern pattern;
+    private final Pattern phonePattern;
 
     public PhoneNumberValidator() {
-        this.pattern = Pattern.compile(PHONE_PATTERN);
+        this.phonePattern = Pattern.compile(PHONE_PATTERN);
     }
 
     public void validateFormat(String phoneNumber) {
-        if (!pattern.matcher(phoneNumber).find()) {
+        if (!phonePattern.matcher(phoneNumber).find()) {
             throw new InvalidPhoneNumbersException();
         }
     }
