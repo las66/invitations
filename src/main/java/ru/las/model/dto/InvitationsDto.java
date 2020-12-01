@@ -15,6 +15,6 @@ public class InvitationsDto {
 
     private int author;
     private String message;
-    private List<String> numbers;
+    private List<String> phoneNumbers;
 
 }

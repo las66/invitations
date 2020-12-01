@@ -29,6 +29,7 @@ public class InvitationServiceImpl implements InvitationService {
     }
 
     public void invite(List<String> phoneNumbers, String message, int author) {
+        phoneNumberValidator.validateListSize(phoneNumbers);
         phoneNumberValidator.validateFormat(phoneNumbers);
 
         inviter.sendInvites(phoneNumbers, message);
