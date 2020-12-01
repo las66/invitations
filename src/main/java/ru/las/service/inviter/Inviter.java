@@ -5,4 +5,5 @@ import java.util.List;
 public interface Inviter {
 
     void sendInvites(List<String> phoneNumbers, String message);
+
 }

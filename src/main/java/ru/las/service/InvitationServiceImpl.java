@@ -48,6 +48,7 @@ public class InvitationServiceImpl implements InvitationService {
         messageValidator.validateMaxSize(translitMessage);
 
         inviter.sendInvites(phoneNumbers, message);
+
         invitationDao.create(phoneNumbers, author, application);
     }
 
