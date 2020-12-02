@@ -6,7 +6,7 @@ public interface InvitationDao {
 
     void create(List<String> phoneNumbers, int author, int application);
 
-    boolean checkInvite(String phoneNumber);
+    boolean checkInvite(List<String> phoneNumbers);
 
     int todayCount(int application);
 }

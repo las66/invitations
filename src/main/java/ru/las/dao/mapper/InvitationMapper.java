@@ -21,10 +21,15 @@ public interface InvitationMapper {
                 @Param("author") int author,
                 @Param("app") int application);
 
-    @Select({"SELECT count(*)",
+    @Select({"<script>",
+            " SELECT count(*)",
             "   FROM invitation",
-            "  WHERE phone = #{phoneNumber}"})
-    int invitationCount(@Param("phoneNumber") String phoneNumber);
+            "  WHERE phone in",
+            "    <foreach item=\"item\" index=\"index\" collection=\"phoneNumbers\" open=\"(\" separator=\", \" close=\")\">",
+            "        #{item}",
+            "    </foreach>",
+            "</script>"})
+    int invitationCount(@Param("phoneNumbers") List<String> phoneNumber);
 
     @Select({"SELECT * ",
             "   FROM getcountinvitations(#{application})"})

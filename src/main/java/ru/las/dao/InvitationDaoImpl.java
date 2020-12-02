@@ -22,8 +22,8 @@ public class InvitationDaoImpl implements InvitationDao {
     }
 
     @Override
-    public boolean checkInvite(String phoneNumber) {
-        return invitationMapper.invitationCount(phoneNumber) != 0;
+    public boolean checkInvite(List<String> phoneNumbers) {
+        return invitationMapper.invitationCount(phoneNumbers) != 0;
     }
 
     @Override
