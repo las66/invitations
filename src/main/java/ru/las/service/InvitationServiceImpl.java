@@ -2,9 +2,8 @@ package ru.las.service;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.dao.DuplicateKeyException;
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Isolation;
-import org.springframework.transaction.annotation.Transactional;
 import ru.las.converter.TranslitConverter;
 import ru.las.dao.InvitationDao;
 import ru.las.exception.DuplicateInvitationException;
@@ -41,22 +40,26 @@ public class InvitationServiceImpl implements InvitationService {
     }
 
     @Override
-    @Transactional(isolation = Isolation.SERIALIZABLE)
     public void invite(List<String> phoneNumbers, String message, int author) {
         phoneNumberValidator.validateListSize(phoneNumbers);
         phoneNumberValidator.validateFormat(phoneNumbers);
-        phoneNumberValidator.validateNumberPerDay(phoneNumbers, invitationDao.todayCount(application));
         phoneNumberValidator.validateDuplicates(phoneNumbers);
         messageValidator.validateMinSize(message);
 
         String translitMessage = transitConverter.cyrillicToLatin(message);
         messageValidator.validateGsmString(translitMessage);
         messageValidator.validateMaxSize(translitMessage);
+
+        phoneNumberValidator.validateNumberPerDay(phoneNumbers, invitationDao.todayCount(application));
         if (invitationDao.checkInvite(phoneNumbers)) {
             throw new DuplicateInvitationException();
         }
 
-        invitationDao.create(phoneNumbers, author, application);
+        try {
+            invitationDao.create(phoneNumbers, author, application);
+        } catch (DuplicateKeyException e) {
+            throw new DuplicateInvitationException();
+        }
 
         RuntimeException exception = null;
         for (String phoneNumber : phoneNumbers) {
